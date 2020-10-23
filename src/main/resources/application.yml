@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: busclient
+    instance_id: busclient-1
+  cloud:
+    bus:
+      id: ${spring.application.name}:${spring.application.instance_id}
+
+io.rsocket.routing.client:
+  route-id: 00000000-0000-0000-0000-000000000001
+  service-name: ${spring.application.name}
+  tags:
+    INSTANCE_NAME: ${spring.application.instance_id}
+#    bus: true
+  brokers:
+    - tcp:
+        host: localhost
+        port: 8002
+
+logging:
+  level:
+    org.springframework.cloud.bus: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+---
+spring.config.activate.on-profile: bus2
+
+server:
+  port: 8081
+spring:
+  application:
+    instance_id: busclient-2
+io.rsocket.routing.client:
+  route-id: 00000000-0000-0000-0000-000000000002
